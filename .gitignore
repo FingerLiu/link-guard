@@ -1,0 +1,12 @@
+*/.env/*
+qrpay/logs/*
+qrpay/.idea/*
+*/db.sqlite3
+*.DS_Store
+*.pyc
+.idea/*
+*/nohup.out
+*/conf/
+*/__pycache__/
+.env/
+*.log
