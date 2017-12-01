@@ -1,0 +1,49 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+{%- extends "base.html" %}
+
+{% block styles %}
+    {{super()}}
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
+    <style type='text/css'>
+      .row-index {
+        width: 50px;
+        display: inline-block;
+      }
+    </style>
+  {% endblock %}
+
+{% block content %}
+   <div class="container">
+      <div class="jumbotron">
+        <h1>add link to protect</h1>
+      </div>
+    <div id="toolbar"></div>
+    <table
+      id="table"
+      data-toggle="true"
+      data-toolbar="#toolbar"
+      data-search="true"
+      data-show-columns="true"
+      data-pagination="true"
+      data-height="500">
+    </table>
+
+{%- endblock %}
+
+{% block scripts %}
+    {{super()}}
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    <script type='text/javascript'>
+      $(window).load(function(){
+        var data = {{ data|tojson }};
+        var columns = {{ columns|tojson }};
+        $(function() {
+          $('#table').bootstrapTable({
+            data: data,
+            columns: columns,
+          });
+        });
+      });
+    </script>
+{% endblock %}

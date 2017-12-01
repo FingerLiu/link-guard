@@ -59,6 +59,22 @@ class User(db.Model):
         return '<User %r %r>' % (self.id, self.username)
 
 
+class Link(db.Model):
+    __tablename__ = 'links'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) # noqa
+    domain = db.Column(db.String(128)) # noqa
+    start_url = db.Column(db.String(512)) # noqa
+    brokenLinkList = db.Column(db.JSON()) # noqa
+    last_check_datetime = db.Column(db.Date()) # noqa
+    status = db.Column(db.String(128), default='updating') # noqa
+    owner_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), nullable=False
+    ) # noqa
+    owner = db.relationship(
+        'User', backref=db.backref('links', lazy=True)
+    ) # noqa
+
+
 @login_manager.user_loader
 def load_user(user_id):
     u = User.query.filter_by(username='admin').first()

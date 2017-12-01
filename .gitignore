@@ -10,3 +10,6 @@ qrpay/.idea/*
 */__pycache__/
 .env/
 *.log
+*.pid
+celerybeat-schedule.db
+nohup.out

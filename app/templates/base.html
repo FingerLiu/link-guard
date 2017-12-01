@@ -1,0 +1,26 @@
+{%- extends "bootstrap/base.html" %}
+{% block title %}Guard your site away from broken links{% endblock %}
+
+{# While we are at it, we also enable fixes for legacy browsers. First we
+   import the necessary macros: #}
+{% import "bootstrap/fixes.html" as fixes %}
+
+{# Then, inside the head block, we apply these. To not replace the header,
+   ``super()`` is used: #}
+{% block head %}
+{{super()}}
+
+{{fixes.ie8()}}
+{%- endblock %}
+
+{# Adding our own CSS files is also done here. Check the documentation at
+   http://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks
+   for an overview. #}
+{% block styles %}
+    {{super()}}
+{% endblock %}
+
+{# Finally, round things out with navigation #}
+{% block navbar %}
+{{nav.frontend_top.render()}}
+{% endblock %}

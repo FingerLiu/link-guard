@@ -1,0 +1,16 @@
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{%- extends "base.html" %}
+
+
+{% block content %}
+   <div class="container">
+      <div class="jumbotron">
+        <h1>林克刀客特</h1>
+        <p>Sign in for protect your site from broken links.</p>
+      </div>
+   <div class="col-md-12">
+     {{wtf.quick_form(form, novalidate=True)}}
+   </div>
+{%- endblock %}

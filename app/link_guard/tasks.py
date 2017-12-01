@@ -5,8 +5,11 @@ import json
 from scrapy.spiders import Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 from scrapy.crawler import CrawlerProcess
+from celery.decorators import periodic_task
+from celery.task.schedules import crontab
 
 from app import celery, redis_store
+from ..models import Link
 from .spiders.link_spider import LinkSpider
 
 
@@ -52,17 +55,23 @@ def guard(domain='dev.qrpay.ai', base_url='https://dev.qrpay.ai'):
     print(redis_store.lrange('broken_links_%s' % (domain), 0, -1))
 
 
-@celery.task()
+def dump_links2db():
+    """docstring for dump_links2db"""
+    # TODO here
+    pass
+
+
+@periodic_task(run_every=(crontab(minute='1', hour='4')))
 def daily_guard():
     """check for all registered domain every day"""
     # TODO change to get tasks from dbtable Link
-    guard_tasks = redis_store.lrange('link_gurad_daily_tasks', 0, -1)
-    for task_str in guard_tasks:
-        task = json.loads(task_str)
-        lg = LinkGuard(task['domain'], task['base_url'])
+    tasks = Link.query.all()
+    for link in tasks:
+        lg = LinkGuard(link.domain, task.base_url)
         lg.guard()
         print('brokens are ')
         print(redis_store.lrange('broken_links_%s' % (task['domain']), 0, -1))
+    dump_links2db()
 
 
 if __name__ == '__main__':

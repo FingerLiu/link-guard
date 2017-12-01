@@ -9,3 +9,6 @@ SQLAlchemy
 PyMySQL
 flask_sqlalchemy
 flask_migrate
+flask_bootstrap
+flask_nav
+flask-bootstrap-table
