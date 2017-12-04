@@ -5,22 +5,12 @@ from flask import (
     render_template, redirect, url_for, abort,
     send_from_directory, current_app, request
 )
-from flask_login import current_user, login_user
-from flask_nav.elements import Navbar, View, Subgroup, Link, Text, Separator
+from flask_login import current_user, login_user, logout_user
 from .forms import LoginForm, LinkCreateForm
 from . import main
 from .. import db
 from .. import login_required
-from ..nav import nav
 from ..models import User, Link
-
-
-nav.register_element('frontend_top', Navbar(
-    View('Home', '.index'),
-    View('Create Link', '.create_link'),
-    View('List Link', '.list_link'),
-    View('Login', '.login'),
-    Text('林克刀客特'), ))
 
 
 @main.route('/')
@@ -96,3 +86,10 @@ def login():
         login_user(user, True)
         return redirect(request.args.get('next') or url_for('main.index'))
     return render_template('login.html', form=form)
+
+
+
+@main.route('/logout/')
+def logout():
+    logout_user()
+    return redirect(url_for('main.login'))

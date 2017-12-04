@@ -11,7 +11,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap, WebCDN
 from . import config
 from . import link_guard
-from .nav import nav
 
 
 def make_celery(celery, app):
@@ -65,7 +64,6 @@ def create_app(debug=True):
     bootstrap.init_app(app)
     redis_store.init_app(app)
     login_manager.init_app(app)
-    nav.init_app(app)
     make_celery(celery, app)
     app.extensions['bootstrap']['cdns']['jquery'] = WebCDN(app.config['CDN'])
     app.extensions['bootstrap']['cdns']['bootstrap'] = WebCDN(app.config['CDN'])
