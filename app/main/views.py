@@ -6,6 +6,7 @@ from flask import (
     send_from_directory, current_app, request
 )
 from flask_login import current_user, login_user, logout_user
+from app.link_guard.tasks import guard
 from .forms import LoginForm, LinkCreateForm
 from . import main
 from .. import db
@@ -70,6 +71,10 @@ def create_link():
         )
         db.session.add(link)
         db.session.commit()
+        current_app.logger.info("**********************")
+        task = guard.delay(**{ 'domain': form.domain.data, 'start_url': form.start_url.data})
+        print(task)
+        current_app.logger.info(task)
         return redirect(url_for('main.list_link'))
     return render_template('create-link.html', form=form)
 

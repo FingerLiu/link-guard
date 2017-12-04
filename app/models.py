@@ -62,9 +62,9 @@ class User(db.Model):
 class Link(db.Model):
     __tablename__ = 'links'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True) # noqa
-    domain = db.Column(db.String(128)) # noqa
+    domain = db.Column(db.String(128), unique=True, index=True, nullable=False) # noqa
     start_url = db.Column(db.String(512)) # noqa
-    brokenLinkList = db.Column(db.JSON()) # noqa
+    broken_links = db.Column(db.JSON()) # noqa
     last_check_datetime = db.Column(db.Date()) # noqa
     status = db.Column(db.String(128), default='updating') # noqa
     owner_id = db.Column(
@@ -73,6 +73,16 @@ class Link(db.Model):
     owner = db.relationship(
         'User', backref=db.backref('links', lazy=True)
     ) # noqa
+    last_check_result_id = db.Column(
+        db.Integer, db.ForeignKey('results.id'), nullable=True
+    ) # noqa
+
+
+class Result(db.Model):
+    __tablename__ = 'results'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) # noqa
+    domain = db.Column(db.String(128), index=True, nullable=False) # noqa
+    result = db.Column(db.JSON()) # noqa
 
 
 @login_manager.user_loader
