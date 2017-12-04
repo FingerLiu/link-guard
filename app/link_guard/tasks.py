@@ -4,14 +4,15 @@
 import json
 from scrapy.spiders import Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
-from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import CrawlerProcess, Crawler
+from scrapy.utils.project import get_project_settings
 from celery.decorators import periodic_task
 from celery.task.schedules import crontab
 
 from app import celery, redis_store
-from ..models import Link
-from .spiders.link_spider import LinkSpider
-
+from app.models import Link
+from app.link_guard import settings as custom_settings
+from app.link_guard.spiders.link_spider import LinkSpider
 
 
 broken_links = set()
@@ -25,9 +26,9 @@ class LinkGuard(object):
 
     def guard(self):
         """check all links in the given url"""
-        process = CrawlerProcess({
-            'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-        })
+        settings = get_project_settings()
+        settings.setmodule(custom_settings)
+        process = CrawlerProcess(settings)
         kwargs = {
             'start_domain': self.domain,
             'start_urls': [self.base_url],
@@ -41,9 +42,13 @@ class LinkGuard(object):
         # clear old record
         redis_store.delete('broken_links_%s' % (self.domain))
 
-        process.crawl(LinkSpider, **kwargs)
+        spider = Crawler(LinkSpider, settings)
+
+        process.crawl(spider, **kwargs)
         process.start()
-        return True
+        print(spider.stats.get_stats())
+        res = spider.stats.get_stats()
+        return res
 
 
 @celery.task()

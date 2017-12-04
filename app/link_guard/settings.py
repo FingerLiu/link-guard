@@ -9,19 +9,24 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'link_guard'
+BOT_NAME = 'app.link_guard'
 
-SPIDER_MODULES = ['link_guard.spiders']
-NEWSPIDER_MODULE = 'link_guard.spiders'
+SPIDER_MODULES = ['app.link_guard.spiders']
+NEWSPIDER_MODULE = 'app.link_guard.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'link_guard (+http://www.yourdomain.com)'
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+# ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
-USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'
+CLOSESPIDER_TIMEOUT = 60
+
+CLOSESPIDER_PAGECOUNT = 1000
+
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32

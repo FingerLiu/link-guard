@@ -13,3 +13,5 @@ CELERY_RESULT_BACKEND = REDIS_URL
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:nst3618mysql@35.187.220.29/link_guard'
 # SQLALCHEMY_DATABASE_URI = 'mysql://root:nst3618mysql@35.187.220.29/link_guard'
 CDN = 'https://sstatic.qrpay.paduola.com/'
+
+DEPTH_LIMIT = 3
