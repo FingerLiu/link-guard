@@ -7,13 +7,10 @@
 {% block content %}
    <div class="container">
       <div class="jumbotron">
-        <h1>Link Doctor</h1>
-        <p>Sign in for protect your site from broken links.</p>
+        <h1>林克刀客特</h1>
+        <p>Register for protect your site from broken links.</p>
       </div>
    <div class="col-md-12">
      {{wtf.quick_form(form, novalidate=True)}}
-   </div>
-   <div class="col-md-6">
-     <a href="{{ url_for('main.register') }}">Register</a>
    </div>
 {%- endblock %}

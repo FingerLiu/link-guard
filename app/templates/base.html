@@ -8,8 +8,8 @@
 {# Then, inside the head block, we apply these. To not replace the header,
    ``super()`` is used: #}
 {% block head %}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 {{super()}}
-
 {{fixes.ie8()}}
 {%- endblock %}
 
@@ -39,9 +39,9 @@
           <a href="/create-link/" title="Add Link">Add Link</a>
         </li>
         <li>
-          <a href="/list-link/" title="List Link">List Link</a>
+          <a href="/list-link/" title="List Links">List Links</a>
         </li>
-        <p class="navbar-text">林克刀客特</p>
+        <p class="navbar-text">林克刀客・特</p>
       </ul>
 <ul class="nav navbar-nav pull-right">
 

@@ -20,8 +20,8 @@ class LoginForm(FlaskForm):
 
 
 class LinkCreateForm(FlaskForm):
-    domain = StringField('domain')
-    start_url = StringField('start url')
+    domain = StringField('domain', render_kw={"placeholder": "eg. baidu.com"})
+    start_url = StringField('start url', render_kw={"placeholder": "eg. https://baidu.com"})
     submit = SubmitField('create')
 
 
@@ -37,3 +37,17 @@ class LinkForm(FlaskForm):
     broken_link_list = fields.FieldList(fields.FormField(BrokenLinkForm))
     last_check_datetime = DateTimeField('last check datetime')
     status = StringField('status')
+
+
+class RegistrationForm(FlaskForm):
+    email = StringField('email', validators=[DataRequired(), Email()])
+    password = PasswordField('password', validators=[DataRequired()])
+    password2 = PasswordField('password confirm', validators=[DataRequired()])
+    username = StringField('username')
+    submit = SubmitField('KO')
+
+    def validate_email(self, field):
+        """docstring for validate_email"""
+        users = User.query.filter_by(email=field.data)
+        if users.count():
+            raise ValidationError('Email address already registerred. Please try another one.')

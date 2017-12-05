@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import datetime
+from werkzeug.security import generate_password_hash
 from flask import (
     render_template, redirect, url_for, abort,
     send_from_directory, current_app, request
 )
 from flask_login import current_user, login_user, logout_user
 from app.link_guard.tasks import guard
-from .forms import LoginForm, LinkCreateForm
+from .forms import LoginForm, LinkCreateForm, RegistrationForm
 from . import main
 from .. import db
 from .. import login_required
@@ -16,10 +17,6 @@ from ..models import User, Link
 
 @main.route('/')
 def index():
-    current_app.logger.info('current_user is %s', current_user)
-    current_app.logger.info('current_user.is_authenticated is %s', current_user.is_authenticated)
-    if not current_user.is_authenticated:
-        return redirect(url_for('main.login'))
     return render_template('index.html')
 
 
@@ -30,13 +27,9 @@ def list_link():
         dic = obj.__dict__
         dic.pop('_sa_instance_state')
         return dic
+
     links = Link.query.filter_by(owner_id=current_user.id)
     links = [obj2dict(link) for link in links]
-    for link in links:
-        current_app.logger.info(link)
-        current_app.logger.info(type(link))
-    current_app.logger.info('---------------------------------------')
-    current_app.logger.info(type(links))
     columns = [
         {
             "field": "domain",
@@ -71,12 +64,18 @@ def create_link():
         )
         db.session.add(link)
         db.session.commit()
-        current_app.logger.info("**********************")
-        task = guard.delay(**{ 'domain': form.domain.data, 'start_url': form.start_url.data})
-        print(task)
-        current_app.logger.info(task)
+
+        task = guard.delay(**{'domain': form.domain.data, 'start_url': form.start_url.data})
+
         return redirect(url_for('main.list_link'))
     return render_template('create-link.html', form=form)
+
+
+@main.route('/link/<domain>/')
+@login_required
+def show_link():
+    link = Link.query.filter_by(domain=domain).first()
+    return render_template('link.html', link=link)
 
 
 @main.route('/login/', methods=['GET', 'POST'])
@@ -92,6 +91,26 @@ def login():
         return redirect(request.args.get('next') or url_for('main.index'))
     return render_template('login.html', form=form)
 
+
+@main.route('/register/', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        password_hash = generate_password_hash(form.password.data)
+        user = User(
+            email=form.email.data,
+            username=form.username.data,
+            password_hash=password_hash,
+            create_datetime=datetime.datetime.now(),
+        )
+        db.session.add(user)
+        db.session.commit()
+
+        login_user(user, True)
+        return redirect(request.args.get('next') or url_for('main.index'))
+    return render_template('registeration.html', form=form)
 
 
 @main.route('/logout/')

@@ -13,3 +13,4 @@ qrpay/.idea/*
 *.pid
 celerybeat-schedule.db
 nohup.out
+*.out

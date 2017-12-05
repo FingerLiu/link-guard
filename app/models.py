@@ -18,16 +18,12 @@ class User(db.Model):
     __tablename__ = 'users'
 
     # Columns
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True) # noqa
-
     username = db.Column(db.String(128)) # noqa
-
     email = db.Column(db.String(128)) # noqa
-
     password_hash = db.Column(db.String(1024)) # noqa
-
     is_admin = db.Column(db.Boolean, default=False) # noqa
+    create_datetime = db.Column(db.Date()) # noqa
 
     @property
     def is_active(self):
@@ -87,6 +83,7 @@ class Result(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    u = User.query.filter_by(username='admin').first()
+    current_app.logger.debug('[load_user] user_id is %s', user_id)
+    u = User.query.filter_by(id=user_id).first()
     current_app.logger.debug('[load_user] user loaded %s, is_authenticated is %s', u, u.is_authenticated)
     return u
