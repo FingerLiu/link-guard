@@ -47,7 +47,7 @@ def login_required(func):
 
 login_manager = LoginManager()
 bootstrap = Bootstrap()
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'main.login'
 redis_store = FlaskRedis()
 db = SQLAlchemy()
 celery = Celery(

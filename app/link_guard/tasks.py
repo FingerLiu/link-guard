@@ -83,6 +83,7 @@ def guard(domain='dev.qrpay.ai', start_url='https://dev.qrpay.ai'):
 @periodic_task(run_every=(crontab(minute='1', hour='4')))
 def daily_guard():
     """check for all registered domain every day"""
+    # TODO for effiective write a batch guard rather than use the single guard
     links = Link.query.all()
     for link in links:
         lg = LinkGuard(link.domain, link.base_url)
