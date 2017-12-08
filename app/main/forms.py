@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import fields, ValidationError
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, DateTimeField
 from wtforms.validators import DataRequired, Length, Email
-from ..models import User
+from ..models import User, Link
 
 
 class LoginForm(FlaskForm):
@@ -24,6 +24,11 @@ class LinkCreateForm(FlaskForm):
     start_url = StringField('start url', render_kw={"placeholder": "eg. https://baidu.com"})
     submit = SubmitField('create')
 
+    def validate_domain(self, field):
+        links = Link.query.filter_by(domain=field.data)
+        if links.count():
+            raise ValidationError('Domain already registerred. Please try another one.')
+
 
 class BrokenLinkForm(FlaskForm):
     url = StringField('url')
@@ -34,7 +39,7 @@ class BrokenLinkForm(FlaskForm):
 class LinkForm(FlaskForm):
     domain = StringField('domain')
     start_url = StringField('start url')
-    broken_link_list = fields.FieldList(fields.FormField(BrokenLinkForm))
+    broken_links = fields.FieldList(fields.FormField(BrokenLinkForm))
     last_check_datetime = DateTimeField('last check datetime')
     status = StringField('status')
 

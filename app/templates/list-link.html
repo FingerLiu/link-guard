@@ -40,10 +40,24 @@
         var columns = {{ columns|tojson }};
         $(function() {
           $('#table').bootstrapTable({
+            search: false,
+            striped: true,
+            showColumns: false,
             data: data,
             columns: columns,
           });
         });
       });
+    $('#table').on('click-row.bs.table', function (row, element, field) {
+        console.log('row: ');
+        console.log(row);
+        console.log('element: ');
+        console.log(element);
+        // console.log(element.domain);
+        domain = element.domain
+        console.log('field: ');
+        console.log(field);
+        window.location.href = "/link/" + domain;
+    });
     </script>
 {% endblock %}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import json
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 from ..items import BrokenItem
@@ -38,6 +38,7 @@ class LinkSpider(CrawlSpider):
 
             # TODO put into pipline
             if item not in broken_links:
-                broken_links.add(item)
-                redis_store.lpush('broken_links_%s' % (self.start_domain), item)
+                link = json.dumps(dict(item))
+                broken_links.add(link)
+                redis_store.lpush('broken_links_%s' % (self.start_domain), link)
             return item

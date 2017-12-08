@@ -1,0 +1,51 @@
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{%- extends "base.html" %}
+
+{% block styles %}
+    <style type="text/css">
+    statistics_tab{
+      width:100%;
+      border-top:#b3b3b3 1px solid;
+      margin:0 0 20px 0;
+    }
+    .statistics_tab td{
+      padding:10px 0 20px 20px;
+      border-bottom:#eeeeee 1px solid;
+    }
+    .statistics_tab .iconfont{
+      font-size:0.8rem;
+    }
+    .new_tab input{
+        width: 100%;
+        padding: 0;
+    }
+    </style>
+    {{super()}}
+{% endblock %}
+
+{% block content %}
+   <div class="container">
+     <form class="form form-horizontal" method="post" role="form">
+       {{ wtf.form_field(form.domain) }}
+       {{ wtf.form_field(form.start_url) }}
+       <div class="form-group ">
+         <label class="control-label">broken links</label>
+         <table class="statistics_tab new_tab">
+           <tr>
+             <td>url</td>
+             <td>referer</td>
+             <td>status</td>
+           </tr>
+           {% for link in form.broken_links %}
+           <tr>
+             <td >{{ link['url'].data }}</td>
+             <td >{{ link['referer'].data }}</td>
+             <td >{{ link['status'].data }}</td>
+           </tr>
+           {% endfor %}
+         </table>
+       </div>
+   </div>
+{%- endblock %}

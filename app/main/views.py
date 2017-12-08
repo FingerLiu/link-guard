@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
 import datetime
 from werkzeug.security import generate_password_hash
 from flask import (
@@ -8,7 +9,7 @@ from flask import (
 )
 from flask_login import current_user, login_user, logout_user
 from app.link_guard.tasks import guard
-from .forms import LoginForm, LinkCreateForm, RegistrationForm
+from .forms import LoginForm, LinkCreateForm, RegistrationForm, LinkForm, BrokenLinkForm
 from . import main
 from .. import db
 from .. import login_required
@@ -26,6 +27,7 @@ def list_link():
     def obj2dict(obj):
         dic = obj.__dict__
         dic.pop('_sa_instance_state')
+        dic['broken_links_count'] = len(dic.pop('broken_links', []) or [])
         return dic
 
     links = Link.query.filter_by(owner_id=current_user.id)
@@ -37,11 +39,11 @@ def list_link():
         },
         {
             "field": "start_url",
-            "title": "start_url",
+            "title": "start url",
         },
         {
-            "field": "broken_links",
-            "title": "broken_links",
+            "field": "broken_links_count",
+            "title": "broken links count",
         },
         {
             "field": "status",
@@ -73,9 +75,30 @@ def create_link():
 
 @main.route('/link/<domain>/')
 @login_required
-def show_link():
+def show_link(domain):
+    def obj2dict(obj):
+        dic = obj.__dict__
+        dic.pop('_sa_instance_state', '')
+        dic['broken_links_count'] = len(dic.get('broken_links', []))
+        return dic
+
     link = Link.query.filter_by(domain=domain).first()
-    return render_template('link.html', link=link)
+    form = LinkForm()
+    current_app.logger.info(obj2dict(link)['broken_links'])
+    for k, v in obj2dict(link).items():
+        if k == "broken_links":
+            for link in v:
+                link = json.loads(link)
+                broken_link = BrokenLinkForm()
+                for lk, lv in link.items():
+                    if hasattr(broken_link, lk):
+                        setattr(getattr(broken_link, lk), 'data', lv)
+                form.broken_links.append_entry(broken_link)
+
+        elif hasattr(form, k):
+            setattr(getattr(form, k), 'data', v)
+
+    return render_template('link.html', form=form)
 
 
 @main.route('/login/', methods=['GET', 'POST'])
