@@ -14,3 +14,4 @@ qrpay/.idea/*
 celerybeat-schedule.db
 nohup.out
 *.out
+*/config.py
