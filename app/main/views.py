@@ -18,10 +18,11 @@ from ..models import User, Link
 
 @main.route('/')
 def index():
-    # all count
-    all_links = Link.query.filter_by(owner_id=current_user.id).count()
-    # failed count
-    failed_links = Link.query.filter_by(owner_id=current_user.id, status='failed').count()
+    if current_user.is_authenticated:
+        # all count
+        all_links = Link.query.filter_by(owner_id=current_user.id).count()
+        # failed count
+        failed_links = Link.query.filter_by(owner_id=current_user.id, status='failed').count()
     return render_template('index.html')
 
 
