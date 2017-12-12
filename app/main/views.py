@@ -23,6 +23,8 @@ def index():
         all_links = Link.query.filter_by(owner_id=current_user.id).count()
         # failed count
         failed_links = Link.query.filter_by(owner_id=current_user.id, status='failed').count()
+        current_app.logger.debug('all %s, failed %s', all_links, failed_links)
+        return render_template('index.html', all_links=all_links, failed_links=failed_links)
     return render_template('index.html')
 
 
