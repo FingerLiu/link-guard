@@ -31,17 +31,17 @@ class LinkCreateForm(FlaskForm):
 
 
 class BrokenLinkForm(FlaskForm):
-    url = StringField('url')
-    referer = StringField('referer')
-    status = StringField('status')
+    url = StringField('url', render_kw={"readonly": True})
+    referer = StringField('referer', render_kw={"readonly": True})
+    status = StringField('status', render_kw={"readonly": True})
 
 
 class LinkForm(FlaskForm):
-    domain = StringField('domain')
-    start_url = StringField('start url')
+    domain = StringField('domain', render_kw={"readonly": True})
+    start_url = StringField('start url', render_kw={"readonly": True})
     broken_links = fields.FieldList(fields.FormField(BrokenLinkForm))
-    last_check_datetime = DateTimeField('last check datetime')
-    status = StringField('status')
+    last_check_datetime = DateTimeField('last check datetime', render_kw={"readonly": True})
+    status = StringField('status', render_kw={"readonly": True})
 
 
 class RegistrationForm(FlaskForm):

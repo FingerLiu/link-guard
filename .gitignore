@@ -15,3 +15,5 @@ celerybeat-schedule.db
 nohup.out
 *.out
 */config.py
+app/config.py
+config.py
