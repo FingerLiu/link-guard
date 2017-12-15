@@ -15,6 +15,7 @@ All these things are NOT user friendly.
 With link doctor, it will check your site regularly and tell you whether links in your site is OK.
 
 ## Features coming soon
+- [ ] send email to user if there are broken links
 - [ ] immediately check
 - [ ] custom check schedule
 - [ ] custom link type to be checked(all link | just CDN | referenced links)
