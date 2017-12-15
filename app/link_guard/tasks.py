@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+from urllib.parse import urlparse
 from bson import json_util
 from scrapy.spiders import Rule
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
@@ -19,11 +20,17 @@ from app.link_guard.spiders.link_spider import LinkSpider
 broken_links = set()
 
 
+def get_domain(url):
+    """docstring for get_domain"""
+    parsed_url = urlparse(url)
+    return parsed_url.netloc
+
+
 class LinkGuard(object):
     """docstring for LinkGuard"""
     def __init__(self, domain, base_url):
-        self.domain = domain
         self.base_url = base_url
+        self.domain = get_domain(base_ur)
 
     def dump_links2db(self, res):
         res_dumped = json.dumps(res, default=json_util.default)
