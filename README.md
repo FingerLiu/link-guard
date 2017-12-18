@@ -15,6 +15,7 @@ All these things are NOT user friendly.
 With link doctor, it will check your site regularly and tell you whether links in your site is OK.
 
 ## Features coming soon
+- [ ] send email to user if there are broken links
 - [ ] immediately check
 - [ ] Two versions: inside GFW and outside GFW
 - [ ] custom check schedule
