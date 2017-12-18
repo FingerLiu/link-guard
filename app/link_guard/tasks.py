@@ -30,7 +30,8 @@ class LinkGuard(object):
     """docstring for LinkGuard"""
     def __init__(self, domain, base_url):
         self.base_url = base_url
-        self.domain = get_domain(base_ur)
+        self.domain = domain
+        self.real_domain = get_domain(base_url)
 
     def dump_links2db(self, res):
         res_dumped = json.dumps(res, default=json_util.default)
@@ -38,7 +39,7 @@ class LinkGuard(object):
         db.session.add(result)
         db.session.commit()
 
-        raw_broken_links = redis_store.lrange('broken_links_%s' % (self.domain), 0, -1)
+        raw_broken_links = redis_store.lrange('broken_links_%s' % (self.real_domain), 0, -1)
         broken_links = [link.decode() for link in raw_broken_links]
         link = Link.query.filter_by(domain=self.domain).first()
         link.broken_links = broken_links
@@ -56,17 +57,17 @@ class LinkGuard(object):
         settings.setmodule(custom_settings)
         process = CrawlerProcess(settings)
         kwargs = {
-            'start_domain': self.domain,
+            'start_domain': self.real_domain,
             'start_urls': [self.base_url],
             'allow_domains': [],
             'rules': (
-                Rule(LxmlLinkExtractor(allow=(), allow_domains=[self.domain]), callback='parse_obj', follow=True),
+                Rule(LxmlLinkExtractor(allow=(), allow_domains=[self.real_domain]), callback='parse_obj', follow=True),
                 Rule(LxmlLinkExtractor(allow=()), callback='parse_obj', follow=False),
             )
         }
 
         # clear old record
-        redis_store.delete('broken_links_%s' % (self.domain))
+        redis_store.delete('broken_links_%s' % (self.real_domain))
 
         spider = Crawler(LinkSpider, settings)
 

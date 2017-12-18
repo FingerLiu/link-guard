@@ -16,7 +16,9 @@ With link doctor, it will check your site regularly and tell you whether links i
 
 ## Features coming soon
 - [ ] immediately check
+- [ ] Two versions: inside GFW and outside GFW
 - [ ] custom check schedule
 - [ ] custom link type to be checked(all link | just CDN | referenced links)
+- [ ] snapshot for broken links.
 
 # Note: This is only the very first version, and for demo use only.
